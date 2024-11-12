@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { Revenue } from "./definitions";
 
 const LOCALE = "sv-SE";
@@ -66,10 +65,4 @@ export const generatePagination = (currentPage: number, totalPages: number) => {
     "...",
     totalPages,
   ];
-};
-
-export const useConsoleLog = (variable: unknown) => {
-  useEffect(() => {
-    console.log(variable);
-  }, [variable]);
 };
