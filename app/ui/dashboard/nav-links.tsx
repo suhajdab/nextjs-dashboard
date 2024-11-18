@@ -8,7 +8,7 @@ import {
   HomeIcon,
   DocumentDuplicateIcon,
 } from '@heroicons/react/24/outline';
-import { useConsoleLog } from '@/app/lib/useHooks';
+import { useConsoleLog } from '@/app/lib/customHooks';
 
 // Map of links to display in the side navigation.
 // Depending on the size of the application, this would be stored in a database.
