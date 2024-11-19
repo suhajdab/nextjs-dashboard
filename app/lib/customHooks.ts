@@ -1,4 +1,4 @@
-import { useEffect, useRef, useCallback } from "react";
+import { useEffect } from "react";
 
 export const useConsoleLog = (variable: unknown) => {
   useEffect(() => {
