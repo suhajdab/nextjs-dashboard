@@ -28,11 +28,52 @@ export default async function createInvoice(formData: FormData) {
       VALUES (${customerId}, ${amountInCents}, ${status}, ${date})
       RETURNING *;
     `;
-    console.log("✅ Create Invoice parsing", { ...data.rows[0] });
+    console.log("✅ Created Invoice", { ...data.rows[0] });
 
     revalidatePath("/dashboard/invoices");
   } catch (error) {
     console.error("🛑 Error creating invoice", error);
+    throw "Database Error: Failed to Create Invoice.";
   }
   redirect("/dashboard/invoices");
+}
+
+const UpdateInvoice = FormSchema.omit({ id: true, date: true });
+
+export async function updateInvoice(id: string, formData: FormData) {
+  try {
+    const rawFormData = Object.fromEntries(formData.entries());
+    const { customerId, amount, status } = UpdateInvoice.parse(rawFormData);
+
+    const amountInCents = amount * 100;
+
+    const data = await sql`
+      UPDATE invoices
+      SET customer_id = ${customerId}, amount = ${amountInCents}, status = ${status}
+      WHERE id = ${id}
+      RETURNING *;
+    `;
+    console.log("✅ Updated Invoice", { ...data.rows[0] });
+
+    revalidatePath("/dashboard/invoices");
+  } catch (error) {
+    console.error("🛑 Error updating invoice", error);
+    throw "Database Error: Failed to Update Invoice.";
+  }
+  redirect("/dashboard/invoices");
+}
+
+export async function deleteInvoice(id: string) {
+  try {
+    await sql`
+      DELETE FROM invoices
+      WHERE id = ${id};
+    `;
+    console.log("✅ Deleted Invoice", { id });
+
+    revalidatePath("/dashboard/invoices");
+  } catch (error) {
+    console.error("🛑 Error deleting invoice", error);
+    throw "Database Error: Failed to Delete Invoice.";
+  }
 }
