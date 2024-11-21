@@ -22,6 +22,11 @@ export type State = {
     status?: string[];
   };
   message?: string | null;
+  values?: {
+    customerId?: string;
+    amount?: number;
+    status?: string;
+  };
 };
 
 const CreateInvoice = FormSchema.omit({ id: true, date: true });
@@ -35,7 +40,8 @@ export async function createInvoice(_prevState: State, formData: FormData) {
       return {
         errors: validatedFields.error.flatten().fieldErrors,
         message: "Incorrect fields. Failed to create invoice.",
-      };
+        values: { ...rawFormData },
+      } as State;
     }
 
     const { customerId, amount, status } = validatedFields.data;
@@ -60,7 +66,11 @@ export async function createInvoice(_prevState: State, formData: FormData) {
 
 const UpdateInvoice = FormSchema.omit({ id: true, date: true });
 
-export async function updateInvoice(id: string, formData: FormData) {
+export async function updateInvoice(
+  id: string,
+  _prevState: State,
+  formData: FormData
+) {
   try {
     const rawFormData = Object.fromEntries(formData.entries());
     const validatedFields = UpdateInvoice.safeParse(rawFormData);
@@ -69,7 +79,8 @@ export async function updateInvoice(id: string, formData: FormData) {
       return {
         errors: validatedFields.error.flatten().fieldErrors,
         message: "Incorrect fields. Failed to update invoice.",
-      };
+        values: { ...rawFormData },
+      } as State;
     }
 
     const { customerId, amount, status } = validatedFields.data;
